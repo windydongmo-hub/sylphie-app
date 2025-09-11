@@ -1,4 +1,4 @@
-name: CI - Build React App
+name: CI - Sylphie App
 
 on:
   push:
@@ -7,7 +7,8 @@ on:
   pull_request:
 
 jobs:
-  build:
+  frontend:
+    name: 📦 Build Frontend (React)
     runs-on: ubuntu-latest
 
     steps:
@@ -19,10 +20,30 @@ jobs:
         with:
           node-version: 18
 
-      - name: 📦 Installer les dépendances
+      - name: 📦 Installer dépendances frontend
         run: npm install
         working-directory: ./frontend-web
 
-      - name: 🚀 Build de l’application
+      - name: 🚀 Build frontend
         run: npm run build
         working-directory: ./frontend-web
+
+  backend:
+    name: ⚙️ Test Backend (FastAPI)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v3
+
+      - name: 🐍 Installer Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Installer dépendances backend
+        run: pip install -r backend/requirements.txt
+
+      - name: ✅ Lancer tests backend
+        run: pytest
+        working-directory: ./backend
